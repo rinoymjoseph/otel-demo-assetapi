@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otel.Demo.AssetApi", "src\Otel.Demo.AssetApi\Otel.Demo.AssetApi.csproj", "{BED1C94B-6EFA-4459-BCD5-42065A3A761A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BED1C94B-6EFA-4459-BCD5-42065A3A761A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED1C94B-6EFA-4459-BCD5-42065A3A761A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED1C94B-6EFA-4459-BCD5-42065A3A761A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED1C94B-6EFA-4459-BCD5-42065A3A761A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1C8B11C-AB6D-435F-AED7-6A0E68F48F36}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,38 @@
+trigger:
+- main
+
+jobs: 
+- job: BUILD_AND_PUBLISH
+  displayName: Build and Publish
+  pool:
+    name: Azure Pipelines
+    vmImage: ubuntu-latest
+  steps:
+
+  - checkout: self
+    fetchDepth: 0
+
+  - task: UseDotNet@2
+    displayName: Use .NET 6.0
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+
+  - task: Bash@3
+    displayName: 'Install nbgv and set version'
+    inputs:
+      targetType: 'inline'
+      script: |
+        dotnet tool install --configfile tool.nuget.config --tool-path . nbgv
+        ./nbgv cloud -a -c
+        ls -R $(Build.SourcesDirectory)
+
+  - task: Docker@2
+    displayName: 'Build and Push the image'
+    inputs:
+      containerRegistry: rinoys_acr
+      repository: otel-demo-asset-api
+      command: buildAndPush
+      Dockerfile: Dockerfile
+      buildContext: $(Build.SourcesDirectory)
+      tags: $(GitBuildVersionSimple)
