@@ -20,8 +20,8 @@ namespace Otel.Demo.AssetApi.Services
         public async Task<JsonObject?> GetAssetDetails(string assetId)
         {
             using var activity_getAssetDetails = _telemetryService.GetActivitySource().StartActivity("GetAssetDetails");
-            var assetDBApiUrl = _configuration.GetValue<string>(AppConstants.URL_ASSETDB_API);
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{assetDBApiUrl}{AppConstants.REQUEST_GET_ASSET_DETAILS}/{assetId}");
+            var dataApiUrl = _configuration.GetValue<string>(AppConstants.URL_DATA_API);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{dataApiUrl}{AppConstants.REQUEST_GET_ASSET_DETAILS}/{assetId}");
             var httpClient = _httpClientFactory.CreateClient();
             var httpResult = await httpClient.SendAsync(request);
             var response = await httpResult.Content.ReadAsStringAsync();
