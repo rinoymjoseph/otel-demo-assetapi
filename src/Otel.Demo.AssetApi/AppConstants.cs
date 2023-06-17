@@ -10,7 +10,7 @@
         public const string URL_EVENT_API = "event_api_url";
         public const string URL_ALARM_API = "alarm_api_url";
 
-        public const string REQUEST_GET_ASSET_DETAILS = "/assetdb/GetAssetDetails";
+        public const string REQUEST_GET_ASSET_DETAILS = "/data/GetAssetDetails";
         public const string REQUEST_GET_VARIABLE_DATA = "/variable/GetVariableData";
         public const string REQUEST_GET_EVENT_DATA = "/event/GetEventsOfAsset";
 
