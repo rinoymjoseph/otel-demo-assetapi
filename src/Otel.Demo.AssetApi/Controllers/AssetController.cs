@@ -100,7 +100,7 @@ namespace Otel.Demo.AssetApi.Controllers
 
             AssetData assetData = new AssetData();
             assetData.AssetId = assetId.ToString();
-            assetData.AssetName= assetDetails?["name"]?.ToString();
+            assetData.AssetName= assetDetails?["assetName"]?.ToString();
             assetData.Username = username;
             assetData.VariableData = await variableDataTask;
             assetData.EventData = await eventDataTask;
