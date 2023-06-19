@@ -13,6 +13,7 @@
         public const string REQUEST_GET_ASSET_DETAILS = "/assetdata/GetAssetDetails";
         public const string REQUEST_GET_VARIABLE_DATA = "/variable/GetVariableData";
         public const string REQUEST_GET_EVENT_DATA = "/event/GetEventsOfAsset";
+        public const string REQUEST_GET_USERNAME = "/userdata/GetUserName";
 
         public const string COUNTER_ASSET_GET_ASSET_DATA = "asset_api_get_asset_data_requests";
         public const string COUNTER_ASSET_GET_ASSET_DATA_SEQ = "asset_api_get_asset_data_seq_requests";
