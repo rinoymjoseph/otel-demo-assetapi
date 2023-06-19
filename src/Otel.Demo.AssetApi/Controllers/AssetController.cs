@@ -51,7 +51,6 @@ namespace Otel.Demo.AssetApi.Controllers
             using var activity_GetAssetDataSeq = _telemetryService.GetActivitySource().StartActivity("GetAssetDataSeq");
             activity_GetAssetDataSeq?.SetTag("AssetId", assetId);
             activity_GetAssetDataSeq?.SetTag("ContextId", contextId);
-            activity_GetAssetDataSeq?.AddEvent(new("GetAssetData"));
             Baggage.SetBaggage("ContextId", contextId.ToString());
 
             var assetDetails = await _assetService.GetAssetDetails(assetId);
@@ -90,7 +89,6 @@ namespace Otel.Demo.AssetApi.Controllers
             using var activity_GetAssetData = _telemetryService.GetActivitySource().StartActivity("GetAssetData");
             activity_GetAssetData?.SetTag("AssetId", assetId);
             activity_GetAssetData?.SetTag("ContextId", contextId);
-            activity_GetAssetData?.AddEvent(new("GetAssetData"));
             Baggage.SetBaggage("ContextId", contextId.ToString());
 
             var assetDetails = await _assetService.GetAssetDetails(assetId);
