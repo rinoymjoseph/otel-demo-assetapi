@@ -32,7 +32,7 @@ namespace Otel.Demo.AssetApi.Controllers
         [HttpGet("GetAssetDataSeq/{assetId}")]
         public async Task<IActionResult> GetAssetDataSeq(string assetId = "4de1208e-d1b7-46a1-9743-8f2b39c3ad39")
         {
-            _logger.LogInformation("Entering GetAssetDataSeq");
+            _logger.LogInformation($"Entering GetAssetDataSeq : {assetId}");
 
             _telemetryService.GetAssetDataSeqReqCounter().Add(1,
                 new("Action", nameof(GetAssetDataSeq)),
@@ -64,14 +64,14 @@ namespace Otel.Demo.AssetApi.Controllers
             assetData.Username = username;
             assetData.VariableData = variableData;
             assetData.EventData = eventData;
-            _logger.LogInformation("Exiting GetAssetDataSeq");
+            _logger.LogInformation($"Exiting GetAssetDataSeq : {assetId}");
             return Ok(assetData);
         }
 
         [HttpGet("GetAssetData/{assetId}")]
         public async Task<IActionResult> GetAssetData(string assetId = "4de1208e-d1b7-46a1-9743-8f2b39c3ad39")
         {
-            _logger.LogInformation("Entering GetAssetData");
+            _logger.LogInformation($"Entering GetAssetData : {assetId}");
 
             _telemetryService.GetAssetDataReqCounter().Add(1,
                 new("Action", nameof(GetAssetData)),
@@ -85,7 +85,7 @@ namespace Otel.Demo.AssetApi.Controllers
                 contextId = Guid.NewGuid().ToString();
             }
 
-            _logger.LogInformation($"GetAssetDataSeq : {username} : {assetId}");
+            _logger.LogInformation($"GetAssetData : {username} : {assetId}");
 
             using var activity_GetAssetData = _telemetryService.GetActivitySource().StartActivity("GetAssetData");
             activity_GetAssetData?.SetTag("AssetId", assetId);
@@ -104,7 +104,7 @@ namespace Otel.Demo.AssetApi.Controllers
             assetData.Username = username;
             assetData.VariableData = await variableDataTask;
             assetData.EventData = await eventDataTask;
-            _logger.LogInformation("Exiting GetAssetData");
+            _logger.LogInformation($"Exiting GetAssetData : {assetId}");
             return Ok(assetData);
         }
     }
