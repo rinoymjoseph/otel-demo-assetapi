@@ -5,13 +5,16 @@ namespace Otel.Demo.AssetApi.Services
 {
     public class AssetService : IAssetService
     {
+        private ILogger _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly ITelemetryService _telemetryService;
 
-        public AssetService(IConfiguration configuration, IHttpClientFactory httpClientFactory,
+        public AssetService(ILogger<AssetService> logger,
+            IConfiguration configuration, IHttpClientFactory httpClientFactory,
            ITelemetryService telemetryService)
         {
+            _logger = logger;
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
             _telemetryService = telemetryService;
@@ -19,6 +22,7 @@ namespace Otel.Demo.AssetApi.Services
 
         public async Task<JsonObject?> GetAssetDetails(string assetId)
         {
+            _logger.LogInformation("Entering GetAssetDetails");
             using var activity_getAssetDetails = _telemetryService.GetActivitySource().StartActivity("GetAssetDetails");
             var dataApiUrl = _configuration.GetValue<string>(AppConstants.URL_DATA_API);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{dataApiUrl}{AppConstants.REQUEST_GET_ASSET_DETAILS}/{assetId}");
@@ -27,11 +31,13 @@ namespace Otel.Demo.AssetApi.Services
             var response = await httpResult.Content.ReadAsStringAsync();
             httpResult.EnsureSuccessStatusCode();
             var assetDetails = JsonNode.Parse(response)?.AsObject();
+            _logger.LogInformation("Exiting GetAssetDetails");
             return assetDetails;
         }
 
         public async Task<JsonArray?> GetVariableDataSeq(JsonObject? assetDetails)
         {
+            _logger.LogInformation("Entering GetVariableDataSeq");
             var variables = assetDetails?["variables"]?.AsArray();
             JsonArray? variableDataArray = new JsonArray();
 
@@ -41,12 +47,13 @@ namespace Otel.Demo.AssetApi.Services
                 var variableDataObject = await GetVariableValue(variable);
                 variableDataArray.Add(variableDataObject);
             }
-
+            _logger.LogInformation("Exiting GetVariableDataSeq");
             return variableDataArray;
         }
 
         public async Task<JsonArray?> GetVariableData(JsonObject? assetDetails)
         {
+            _logger.LogInformation("Entering GetVariableData");
             var variables = assetDetails?["variables"]?.AsArray();
             JsonArray? variableDataArray = new JsonArray();
 
@@ -64,12 +71,13 @@ namespace Otel.Demo.AssetApi.Services
             {
                 variableDataArray.Add(await task);
             }
-
+            _logger.LogInformation("Exiting GetVariableData");
             return variableDataArray;
         }
 
         private async Task<JsonObject?> GetVariableValue(string? variableName)
         {
+            _logger.LogInformation("Entering GetVariableValue");
             var variableApiUrl = _configuration.GetValue<string>(AppConstants.URL_VARIABLE_API);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{variableApiUrl}{AppConstants.REQUEST_GET_VARIABLE_DATA}/{variableName}");
             var httpClient = _httpClientFactory.CreateClient();
@@ -77,11 +85,13 @@ namespace Otel.Demo.AssetApi.Services
             var response = await httpResult.Content.ReadAsStringAsync();
             httpResult.EnsureSuccessStatusCode();
             var variableData = JsonNode.Parse(response)?.AsObject();
+            _logger.LogInformation("Exiting GetVariableValue");
             return variableData;
         }
 
         public async Task<JsonArray?> GetEventData(string asssetId)
         {
+            _logger.LogInformation("Entering GetEventData");
             var eventApiUrl = _configuration.GetValue<string>(AppConstants.URL_EVENT_API);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{eventApiUrl}{AppConstants.REQUEST_GET_EVENT_DATA}/{asssetId}");
             var httpClient = _httpClientFactory.CreateClient();
@@ -89,6 +99,7 @@ namespace Otel.Demo.AssetApi.Services
             var response = await httpResult.Content.ReadAsStringAsync();
             httpResult.EnsureSuccessStatusCode();
             var eventData = JsonNode.Parse(response)?.AsArray();
+            _logger.LogInformation("Exiting GetEventData");
             return eventData;
         }
     }

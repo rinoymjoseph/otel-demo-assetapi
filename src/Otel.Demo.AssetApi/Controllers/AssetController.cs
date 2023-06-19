@@ -9,12 +9,13 @@ namespace Otel.Demo.AssetApi.Controllers
     [ApiController]
     public class AssetController : ControllerBase
     {
+        private ILogger _logger;
         private readonly ITelemetryService _telemetryService;
         private readonly IAssetService _assetService;
 
-        public AssetController(IConfiguration configuration, IHttpClientFactory httpClientFactory,
-           ITelemetryService telemetryService, IAssetService assetService)
+        public AssetController(ILogger<AssetController> logger, ITelemetryService telemetryService, IAssetService assetService)
         {
+            _logger = logger;
             _telemetryService = telemetryService;
             _assetService = assetService;
         }
@@ -28,6 +29,8 @@ namespace Otel.Demo.AssetApi.Controllers
         [HttpGet("GetAssetDataSeq/{assetId}")]
         public async Task<IActionResult> GetAssetDataSeq(string assetId = "4de1208e-d1b7-46a1-9743-8f2b39c3ad39")
         {
+            _logger.LogInformation("Entering GetAssetDataSeq");
+
             _telemetryService.GetAssetDataSeqReqCounter().Add(1,
                 new("Action", nameof(GetAssetDataSeq)),
                 new("Controller", nameof(AssetController)));
@@ -52,12 +55,14 @@ namespace Otel.Demo.AssetApi.Controllers
             assetData.AssetName= assetDetails?["name"]?.ToString();
             assetData.VariableData = variableData;
             assetData.EventData = eventData;
+            _logger.LogInformation("Exiting GetAssetDataSeq");
             return Ok(assetData);
         }
 
         [HttpGet("GetAssetData/{assetId}")]
         public async Task<IActionResult> GetAssetData(string assetId = "4de1208e-d1b7-46a1-9743-8f2b39c3ad39")
         {
+            _logger.LogInformation("Entering GetAssetData");
             _telemetryService.GetAssetDataReqCounter().Add(1,
                 new("Action", nameof(GetAssetData)),
                 new("Controller", nameof(AssetController)));
@@ -82,6 +87,7 @@ namespace Otel.Demo.AssetApi.Controllers
             assetData.AssetName= assetDetails?["name"]?.ToString();
             assetData.VariableData = await variableDataTask;
             assetData.EventData = await eventDataTask;
+            _logger.LogInformation("Exiting GetAssetData");
             return Ok(assetData);
         }
     }
