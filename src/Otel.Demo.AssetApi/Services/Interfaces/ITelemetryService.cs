@@ -10,5 +10,9 @@ namespace Otel.Demo.AssetApi.Services.Interfaces
         Counter<long> GetAssetDataReqCounter();
 
         Counter<long> GetAssetDataSeqReqCounter();
+
+        Counter<long> GetAssetDataReqCounterSuccess();
+
+        Counter<long> GetAssetDataReqCounterFailure();
     }
 }

@@ -59,7 +59,7 @@ namespace Otel.Demo.AssetApi.Controllers
 
             AssetData assetData = new AssetData();
             assetData.AssetId = assetId.ToString();
-            assetData.AssetName= assetDetails?["name"]?.ToString();
+            assetData.AssetName = assetDetails?["name"]?.ToString();
             assetData.Username = username;
             assetData.VariableData = variableData;
             assetData.EventData = eventData;
@@ -76,34 +76,50 @@ namespace Otel.Demo.AssetApi.Controllers
                 new("Action", nameof(GetAssetData)),
                 new("Controller", nameof(AssetController)));
 
-            string? username = await _userService.GetUserName();
-
-            var contextId = Baggage.GetBaggage("ContextId");
-            if (string.IsNullOrEmpty(contextId))
+            try
             {
-                contextId = Guid.NewGuid().ToString();
+                string? username = await _userService.GetUserName();
+
+                var contextId = Baggage.GetBaggage("ContextId");
+                if (string.IsNullOrEmpty(contextId))
+                {
+                    contextId = Guid.NewGuid().ToString();
+                }
+
+                _logger.LogInformation($"GetAssetData : userName -> {username} : assetId -> {assetId}");
+
+                using var activity_GetAssetData = _telemetryService.GetActivitySource().StartActivity("GetAssetData");
+                activity_GetAssetData?.SetTag("AssetId", assetId);
+                activity_GetAssetData?.SetTag("ContextId", contextId);
+                Baggage.SetBaggage("ContextId", contextId.ToString());
+
+                var assetDetails = await _assetService.GetAssetDetails(assetId);
+                var variableDataTask = _assetService.GetVariableData(assetDetails);
+                var eventDataTask = _assetService.GetEventData(assetId);
+                await Task.WhenAll(variableDataTask, eventDataTask);
+
+                AssetData assetData = new AssetData();
+                assetData.AssetId = assetId.ToString();
+                assetData.AssetName = assetDetails?["assetName"]?.ToString();
+                assetData.Username = username;
+                assetData.VariableData = await variableDataTask;
+                assetData.EventData = await eventDataTask;
+
+
+                _telemetryService.GetAssetDataReqCounterSuccess().Add(1,
+                    new("Action", nameof(GetAssetData)),
+                    new("Controller", nameof(AssetController)));
+
+                _logger.LogInformation($"Exiting GetAssetData : assetId -> {assetId}");
+                return Ok(assetData);
             }
-
-            _logger.LogInformation($"GetAssetData : userName -> {username} : assetId -> {assetId}");
-
-            using var activity_GetAssetData = _telemetryService.GetActivitySource().StartActivity("GetAssetData");
-            activity_GetAssetData?.SetTag("AssetId", assetId);
-            activity_GetAssetData?.SetTag("ContextId", contextId);
-            Baggage.SetBaggage("ContextId", contextId.ToString());
-
-            var assetDetails = await _assetService.GetAssetDetails(assetId);
-            var variableDataTask = _assetService.GetVariableData(assetDetails);
-            var eventDataTask = _assetService.GetEventData(assetId);
-            await Task.WhenAll(variableDataTask, eventDataTask);
-
-            AssetData assetData = new AssetData();
-            assetData.AssetId = assetId.ToString();
-            assetData.AssetName= assetDetails?["assetName"]?.ToString();
-            assetData.Username = username;
-            assetData.VariableData = await variableDataTask;
-            assetData.EventData = await eventDataTask;
-            _logger.LogInformation($"Exiting GetAssetData : assetId -> {assetId}");
-            return Ok(assetData);
+            catch (Exception)
+            {
+                _telemetryService.GetAssetDataReqCounterFailure().Add(1,
+                    new("Action", nameof(GetAssetData)),
+                    new("Controller", nameof(AssetController)));
+                throw;
+            }
         }
     }
 }

@@ -16,6 +16,8 @@
         public const string REQUEST_GET_USERNAME = "/userdata/GetUserName";
 
         public const string COUNTER_ASSET_GET_ASSET_DATA = "asset_api_get_asset_data_requests";
+        public const string COUNTER_ASSET_GET_ASSET_DATA_REQUESTS_FAILURE = "asset_api_get_asset_data_requests_failure";
+        public const string COUNTER_ASSET_GET_ASSET_DATA_REQUESTS_SUCCESS= "asset_api_get_asset_data_requests_success";
         public const string COUNTER_ASSET_GET_ASSET_DATA_SEQ = "asset_api_get_asset_data_seq_requests";
     }
 }
