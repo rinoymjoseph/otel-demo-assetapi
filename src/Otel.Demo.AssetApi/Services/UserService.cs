@@ -23,7 +23,7 @@ namespace Otel.Demo.AssetApi.Services
         {
             _logger.LogInformation("Entering GetUserName");
             using var activity_getAssetDetails = _telemetryService.GetActivitySource().StartActivity("GetUserName");
-            var dataApiUrl = _configuration.GetValue<string>(AppConstants.URL_DATA_API);
+            var dataApiUrl = _configuration.GetValue<string>(AppConstants.DATA_API_URL);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{dataApiUrl}{AppConstants.REQUEST_GET_USERNAME}");
             var httpClient = _httpClientFactory.CreateClient();
             var httpResult = await httpClient.SendAsync(request);

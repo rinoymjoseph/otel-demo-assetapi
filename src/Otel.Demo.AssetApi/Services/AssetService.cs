@@ -24,7 +24,7 @@ namespace Otel.Demo.AssetApi.Services
         {
             _logger.LogInformation($"Entering GetAssetDetails : assetId -> {assetId}");
             using var activity_getAssetDetails = _telemetryService.GetActivitySource().StartActivity("GetAssetDetails");
-            var dataApiUrl = _configuration.GetValue<string>(AppConstants.URL_DATA_API);
+            var dataApiUrl = _configuration.GetValue<string>(AppConstants.DATA_API_URL);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{dataApiUrl}{AppConstants.REQUEST_GET_ASSET_DETAILS}/{assetId}");
             var httpClient = _httpClientFactory.CreateClient();
             var httpResult = await httpClient.SendAsync(request);
@@ -78,7 +78,7 @@ namespace Otel.Demo.AssetApi.Services
         private async Task<JsonObject?> GetVariableValue(string? variableName)
         {
             _logger.LogInformation($"Entering GetVariableValue : variableName -> {variableName}");
-            var variableApiUrl = _configuration.GetValue<string>(AppConstants.URL_VARIABLE_API);
+            var variableApiUrl = _configuration.GetValue<string>(AppConstants.VARIABLE_API_URL);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{variableApiUrl}{AppConstants.REQUEST_GET_VARIABLE_DATA}/{variableName}");
             var httpClient = _httpClientFactory.CreateClient();
             var httpResult = await httpClient.SendAsync(request);
@@ -92,7 +92,7 @@ namespace Otel.Demo.AssetApi.Services
         public async Task<JsonArray?> GetEventData(string asssetId)
         {
             _logger.LogInformation($"Entering GetEventData: asssetId -> {asssetId}");
-            var eventApiUrl = _configuration.GetValue<string>(AppConstants.URL_EVENT_API);
+            var eventApiUrl = _configuration.GetValue<string>(AppConstants.EVENT_API_URL);
             var request = new HttpRequestMessage(HttpMethod.Get, $"{eventApiUrl}{AppConstants.REQUEST_GET_EVENT_DATA}/{asssetId}");
             var httpClient = _httpClientFactory.CreateClient();
             var httpResult = await httpClient.SendAsync(request);
