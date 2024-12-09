@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: otel-demo-data-api
+      IMAGE_NAME: otel-demo-asset-api
       VERSION: ${{ needs.gitversion.outputs.MajorMinorPatch }}
 
     steps:
