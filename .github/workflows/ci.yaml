@@ -1,0 +1,63 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+
+jobs:
+
+  gitversion:
+    runs-on: ubuntu-latest
+    outputs:
+      MajorMinorPatch: ${{ steps.gitversion.outputs.MajorMinorPatch }}
+      PreReleaseTag: ${{ steps.gitversion.outputs.PreReleaseTag }}
+      SemVer: ${{ steps.gitversion.outputs.SemVer }}
+    steps:
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: "5.x"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v1.1.1
+        with:
+          useConfigFile: true
+
+  build-and-push:
+    needs: gitversion
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: otel-demo-data-api
+      VERSION: ${{ needs.gitversion.outputs.MajorMinorPatch }}
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Podman
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman
+
+     # Step 3: Log in to Azure Container Registry using Podman
+      - name: Log in to Azure Container Registry
+        run: |
+          podman login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
+
+      # Step 4: Build the Podman image
+      - name: Build Podman image
+        run: |
+          podman build -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} .
+
+      # Step 5: Push the Podman image to the registry
+      - name: Push Podman image
+        run: |
+          podman push ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
