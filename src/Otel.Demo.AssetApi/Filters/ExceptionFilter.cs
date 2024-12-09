@@ -17,7 +17,7 @@ namespace Otel.Demo.AssetApi.Filters
         }
         public override Task OnExceptionAsync(ExceptionContext context)
         {
-            context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Result = new JsonResult(context.Exception.Message);
             _logger.LogError(context.Exception.Message);
             _logger.LogError(context.Exception.StackTrace);
